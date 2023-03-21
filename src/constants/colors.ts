@@ -1,6 +1,7 @@
 const colors = {
   white: '#ffffff',
   red: '#ff0000',
+  gray: '#808080',
   purple: '#770085',
   black: '#000000',
   blue: '#56a8fc',
@@ -18,6 +19,9 @@ const colors = {
   buttonText: '#080808',
   backButton: '#1a1a1a',
   topLinerGradient: '##4d4d4d',
+  disabledButton: '#9e9a8b',
+  paginationButtonColor: '#e6e6e6',
+  tabsBackColor: '#1d1c1c',
 }
 
 export default colors

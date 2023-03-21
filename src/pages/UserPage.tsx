@@ -1,4 +1,3 @@
-import { ReactQueryDevtools } from 'react-query/devtools'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import Button from '../component/UI/Button'
@@ -9,33 +8,81 @@ import { StyledText } from '../component/UI/Text'
 import colors from '../constants/colors'
 import { FilmService } from '../services/FilmService'
 import { useQuery } from 'react-query'
+import Pagination from '../component/UI/Pagination'
+import EditWindow from '../component/UI/EditWindow'
 
 const UserPage = () => {
-  const [page, setPage] = useState(1)
+  const [modal, setModal] = useState(false)
+  const [pageNumber, setPage] = useState(1)
+  const [tabsState, setTabs] = useState(1)
   const { data, isLoading, error } = useQuery(
-    ['films', page],
-    async () => await FilmService.fetchFilms(page),
+    ['films', pageNumber],
+    async () => await FilmService.fetchFilms(pageNumber),
     {
       keepPreviousData: true,
       refetchOnWindowFocus: false,
     }
   )
-
+  const closeModal = (): void => {
+    setModal(false)
+  }
+  const changePageFilms = (value: number): void => {
+    setPage(value)
+  }
+  const getPageNumber = (): number => {
+    return pageNumber
+  }
+  const setTabValue = (value: number): void => {
+    setTabs(value)
+  }
+  const getTabValue = (): number => {
+    return tabsState
+  }
+  // функция для отрисовки фильмов и пагинации
+  function FilmCard() {
+    if (isLoading) {
+      return <h1>LOADING.......</h1>
+    }
+    if (error) {
+      return <h1>error</h1>
+    }
+    return (
+      <>
+        {tabsState == 1 ? (
+          <FilmCards data={data.films} />
+        ) : tabsState == 2 ? (
+          'ЗДЕСЬ ПОКА ЧТО НИЧЕГО'
+        ) : tabsState == 3 ? (
+          'И ЗДЕСЬ ТОЖЕ =)'
+        ) : (
+          tabsState
+        )}
+        <Pagination
+          changePage={changePageFilms}
+          getPage={getPageNumber}
+          filmsCount={tabsState == 1 ? data : ''}
+        />
+      </>
+    )
+  }
   return (
     <Container>
-      <Govno>
+      <UserContent>
         <Header>
           <Image>
-            <Icon
-              icon='camera'
-              size={25}
-              color='black'
-              style={{
-                marginRight: 7,
-                marginBottom: 12,
-                backgroundColor: '#C4C4C4',
-              }}
-            />
+            <EditPhotoContainer>
+              <Icon
+                icon='camera'
+                size={25}
+                color='black'
+                style={{
+                  position: 'relative',
+                  marginLeft: 5,
+                  marginTop: 3,
+                }}
+              />
+              <EditPhotoInput />
+            </EditPhotoContainer>
           </Image>
           <UserInfo>
             <StyledText
@@ -50,18 +97,22 @@ const UserPage = () => {
               Registration date: 30 January 2023
             </StyledText>
           </UserInfo>
-          <Button text='Edit' style={{ marginLeft: 150, marginTop: 17 }} />
+          <Button
+            text='Edit'
+            style={{ marginLeft: 150, marginTop: 17 }}
+            onClick={() => {
+              setModal(true)
+            }}
+          />
+          <EditWindow active={modal} onClose={closeModal} />
         </Header>
-        <Content>
-          <div>
-            <Tabs />
-          </div>
-          {isLoading ? <h1>LOADING</h1> : <FilmCards data={data.films} />}
-          <Button style={{}} onClick={() => setPage((p) => p + 1)} />
-          <Button onClick={() => setPage((p) => p - 1)} />
-        </Content>
-      </Govno>
-      <ReactQueryDevtools initialIsOpen />
+        {/* блок с переключателями вкладок и сами фильмы */}
+        <FilmList>
+          <Tabs setTab={setTabValue} getTab={getTabValue} />
+          <hr style={{ margin: '15px 0' }} />
+          <FilmCard />
+        </FilmList>
+      </UserContent>
     </Container>
   )
 }
@@ -90,18 +141,19 @@ const Header = styled.div`
   border-radius: 16px;
   box-shadow: 2px 5px 25px -3px ${colors.textShadow};
 `
-const Content = styled.div`
+const FilmList = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 25px;
   padding: 20px;
   width: 750px;
+  scrollbar-width: auto;
   background-color: ${colors.loginForm};
   border-radius: 16px;
   box-shadow: 2px 5px 25px -3px ${colors.textShadow};
 `
 
-const Govno = styled.div`
+const UserContent = styled.div`
   display: inline-block;
 `
 const UserInfo = styled.div`
@@ -121,4 +173,22 @@ const Image = styled.div`
   background-position: 50%;
   cursor: pointer;
 `
+const EditPhotoContainer = styled.div`
+  position: relative;
+  width: 35px;
+  height: 35px;
+  margin-right: 5px;
+  border-radius: 90px;
+  background-color: ${colors.gray};
+  cursor: pointer;
+`
+const EditPhotoInput = styled.input.attrs(() => ({ type: 'file' }))`
+  position: absolute;
+  margin-top: 7px;
+  left: 11px;
+  width: 35px;
+  height: 35px;
+  opacity: 0;
+`
+
 export default UserPage

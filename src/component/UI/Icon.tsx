@@ -1,12 +1,12 @@
 import React, { CSSProperties, FC, HTMLAttributes } from 'react'
 import IcoMoon from 'react-icomoon'
-import styled from 'styled-components'
+
 import iconSet from '../../assets/icon.json'
 interface Props {
-  icon?: string
+  icon: string
   color?: string
   size?: number
-  style: CSSProperties
+  style?: CSSProperties
 }
 const Icon: FC<Props & HTMLAttributes<HTMLDivElement>> = ({
   icon,
@@ -15,18 +15,14 @@ const Icon: FC<Props & HTMLAttributes<HTMLDivElement>> = ({
   style,
 }: Props) => {
   return (
-    <Container style={style}>
-      <IcoMoon iconSet={iconSet} icon={icon!} color={color} size={size || 24} />
-    </Container>
+    <IcoMoon
+      style={style}
+      iconSet={iconSet}
+      icon={icon}
+      color={color}
+      size={size || 24}
+    />
   )
 }
-const Container = styled.div`
-  display: flex;
 
-  justify-content: center;
-  align-content: center;
-  width: 35px;
-  height: 35px;
-  border-radius: 90px;
-`
 export default Icon

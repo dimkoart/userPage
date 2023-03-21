@@ -36,6 +36,9 @@ const StyledButton = styled.button`
   &:hover {
     background-color: ${colors.buttonLoginHoverColor};
   }
+  :disabled {
+    background-color: ${colors.disabledButton};
+  }
 `
 
 export default Button

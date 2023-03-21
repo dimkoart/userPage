@@ -1,14 +1,14 @@
-import React, { FC } from 'react'
+import React, { FC, HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import colors from '../../constants/colors'
-import { Film } from './FilmCards'
+import { Film } from '../../types/FilmsType'
 interface Props {
-  posterUrl: string
+  film: Film
 }
 
-const Card = (film: Film) => {
+const Card: FC<Props & HTMLAttributes<HTMLDivElement>> = ({ film }: Props) => {
   return (
-    <FilmCard>
+    <FilmCard {...film}>
       <img style={{ borderRadius: 15 }} src={film.posterUrl} />
     </FilmCard>
   )

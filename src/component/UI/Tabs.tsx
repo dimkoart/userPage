@@ -1,55 +1,67 @@
-import React from 'react'
+import { FC } from 'react'
 import styled from 'styled-components'
 import colors from '../../constants/colors'
-
-const TabsComponent = () => {
+interface Props {
+  setTab: (value: number) => void
+  getTab: () => number
+}
+const TabsComponent: FC<Props> = ({ setTab, getTab }: Props) => {
+  const currTab = getTab()
   const tabs = [
     {
       value: 'Favorites',
+      number: 1,
     },
     {
       value: 'Viewed',
+      number: 2,
     },
     {
       value: 'Watch later',
+      number: 3,
     },
   ]
+
   return (
     <TabsContainer>
       {tabs.map((tab) => (
-        <Tab key={tab.value}>{tab.value}</Tab>
+        <Tab
+          style={{
+            boxShadow: `2px 5px 5px -3px ${
+              currTab == tab.number ? `white` : colors.textShadow
+            }`,
+          }}
+          key={tab.value}
+          onClick={() => {
+            setTab(tab.number)
+          }}
+        >
+          {tab.value}
+        </Tab>
       ))}
     </TabsContainer>
   )
 }
 
 const TabsContainer = styled.div`
-  margin-left: 15px;
   display: flex;
   justify-content: flex-start;
   margin-bottom: 20px;
   margin-top: 20px;
-  &.active {
-    background: #4793ff;
-    color: #fff;
-  }
+  margin-left: 15px;
 `
 const Tab = styled.div`
-  box-shadow: 2px 5px 25px -3px ${colors.textShadow};
-  border-radius: 10px;
-  padding: 9px 20px;
-  background-color: #1d1c1c;
-  color: #e6e6e6;
-  font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 15px;
+  padding: 9px 20px;
+  font-size: 18px;
+  box-shadow: 2px 5px 25px -3px ${colors.textShadow};
+  border-radius: 10px;
+  background-color: ${colors.tabsBackColor};
+  color: ${colors.paginationButtonColor};
   cursor: pointer;
-  &.active {
-    background: #4793ff;
-    color: #fff;
-  }
 `
 
 export default TabsComponent
